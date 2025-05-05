@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>大学乐园 - 开场</title>
+  <style>
+    body {
+      font-family: "微软雅黑", sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .title {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      font-size: 24px;
+    }
+    .game-area {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding: 10px;
+    }
+    .bg {
+      width: 60%;
+    }
+    .avatar {
+      width: 35%;
+    }
+    .dialogue {
+      margin: 10px;
+      padding: 10px;
+      background-color: white;
+      border-radius: 10px;
+    }
+    .input-area {
+      margin-top: 10px;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+    .status-bar {
+      margin: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">大学乐园</div>
+
+  <div class="game-area">
+    <img class="bg" src="images/dorm-hall.jpg" alt="宿舍走廊背景">
+    <img class="avatar" src="images/male-avatar.png" alt="男主头像">
+  </div>
+
+  <div class="dialogue" id="dialogue-box">
+    你站在男生宿舍的走廊里，空气里弥漫着洗发水与粉尘交织的气息。
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="user-input" placeholder="你想做什么？">
+    <br>
+    <button onclick="submitAction()">提交</button>
+  </div>
+
+  <div class="status-bar">
+    时间：10:32 ｜ 好感度：冰洁 +0 ｜ 状态：隐身中
+  </div>
+
+  <script>
+    function submitAction() {
+      const input = document.getElementById("user-input").value;
+      const box = document.getElementById("dialogue-box");
+      box.innerHTML = "你输入了：" + input + "（这里将来接入 AI 响应）";
+      document.getElementById("user-input").value = "";
+    }
+  </script>
+</body>
+</html>
