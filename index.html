@@ -14,6 +14,7 @@
     .avatar-box { display: flex; flex-direction: column; align-items: center; }
     .avatar { width: 80px; border-radius: 50%; border: 2px solid #ccc; }
     .name-tag { margin-top: 5px; font-weight: bold; }
+    .status-bar { margin-top: 10px; padding: 8px; background-color: #eee; font-size: 14px; color: #444; }
   </style>
 </head>
 <body>
@@ -35,40 +36,53 @@
     <div class="avatars" id="avatar-area"></div>
   </div>
 
+  <div class="status-bar" id="status-bar">
+    时间：10:32 ｜ 当前位置：宿舍 ｜ 状态：正常
+  </div>
+
   <script>
-    const scenes = {
-      "宿舍": {
-        background: "images/bg_dorm.png",
-        description: "你站在四人间宿舍内，床铺整齐，阳光从窗帘缝隙透进来。"
+    let world = {
+      player: {
+        name: "男主",
+        location: "宿舍",
+        status: "正常",
+        time: "10:32"
       },
-      "食堂": {
-        background: "images/bg_canteen.png",
-        description: "食堂里人来人往，饭菜香气混合着噪音充斥空气。"
-      },
-      "教室": {
-        background: "images/bg_classroom.png",
-        description: "教室内灯光柔和，几位学生低头写着笔记。"
-      },
-      "厕所": {
-        background: "images/bg_toilet.png",
-        description: "厕所地砖潮湿，有水珠滑落声，空气中有些清洁剂气味。"
+      characters: [
+        { name: "小夏", location: "宿舍", avatar: "images/avatar_xiaxia.png" },
+        { name: "小鹿", location: "教室", avatar: "images/avatar_lu.png" }
+      ],
+      scenes: {
+        "宿舍": {
+          background: "images/bg_dorm.png",
+          description: "你站在四人间宿舍内，床铺整齐，阳光从窗帘缝隙透进来。"
+        },
+        "食堂": {
+          background: "images/bg_canteen.png",
+          description: "食堂里人来人往，饭菜香气混合着噪音充斥空气。"
+        },
+        "教室": {
+          background: "images/bg_classroom.png",
+          description: "教室内灯光柔和，几位学生低头写着笔记。"
+        },
+        "厕所": {
+          background: "images/bg_toilet.png",
+          description: "厕所地砖潮湿，有水珠滑落声，空气中有些清洁剂气味。"
+        }
       }
     };
 
-    const characters = [
-      { name: "小夏", location: "宿舍", avatar: "images/avatar_xiaxia.png" },
-      { name: "小鹿", location: "教室", avatar: "images/avatar_lu.png" }
-    ];
-
     function changeScene() {
       const selected = document.getElementById("scene-select").value;
-      document.getElementById("bg-img").src = scenes[selected].background;
-      document.getElementById("scene-desc").innerText = scenes[selected].description;
+      world.player.location = selected;
+
+      document.getElementById("bg-img").src = world.scenes[selected].background;
+      document.getElementById("scene-desc").innerText = world.scenes[selected].description;
 
       const avatarArea = document.getElementById("avatar-area");
       avatarArea.innerHTML = "";
 
-      characters.forEach(char => {
+      world.characters.forEach(char => {
         if (char.location === selected) {
           const div = document.createElement("div");
           div.className = "avatar-box";
@@ -76,7 +90,17 @@
           avatarArea.appendChild(div);
         }
       });
+
+      updateStatusBar();
     }
+
+    function updateStatusBar() {
+      const statusBar = document.getElementById("status-bar");
+      statusBar.innerText = `时间：${world.player.time} ｜ 当前位置：${world.player.location} ｜ 状态：${world.player.status}`;
+    }
+
+    // 初始化状态栏
+    updateStatusBar();
   </script>
 </body>
 </html>
