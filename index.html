@@ -2,64 +2,42 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>大学乐园 - AI 沙盒系统</title>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    body { font-family: sans-serif; margin: 0; padding: 0; text-align: center; background-color: #f4f4f4; }
+    .title {
       background-color: #333;
       color: white;
-      padding: 10px 15px;
+      padding: 12px;
+      font-size: 5vw;
     }
     .scene-control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .scene-control img {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
+      margin: 15px;
+      font-size: 4vw;
     }
     select {
-      font-size: 16px;
-      padding: 4px 8px;
-      border-radius: 4px;
-    }
-    .title-text {
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 4vw;
+      padding: 6px 10px;
     }
     .game-area {
-      position: relative;
-      max-width: 800px;
-      margin: auto;
       padding: 10px;
     }
     .background {
       width: 100%;
+      max-width: 800px;
       border-radius: 8px;
     }
     .scene-desc {
-      font-size: 16px;
+      font-size: 4vw;
       margin: 10px 0;
       color: #333;
     }
-    .avatar-float {
-      position: fixed;
-      bottom: 80px;
-      right: 10px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 5px;
+    .avatars {
+      margin: 10px 0;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      z-index: 999;
+      justify-content: center;
+      gap: 15px;
     }
     .avatar-box {
       display: flex;
@@ -67,47 +45,44 @@
       align-items: center;
     }
     .avatar {
-      width: 64px;
+      width: 20vw;
+      max-width: 80px;
       border-radius: 50%;
       border: 2px solid #ccc;
     }
     .name-tag {
-      margin-top: 2px;
+      margin-top: 5px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 3.5vw;
     }
     .status-bar {
-      text-align: center;
-      font-size: 14px;
-      background-color: #eee;
-      padding: 8px;
-      border-top: 1px solid #ccc;
+      font-size: 3.5vw;
+      color: #333;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="scene-control">
-      <img src="images/avatar_male.png" alt="主角">
-      <select id="scene-select" onchange="changeScene()">
-        <option value="宿舍">宿舍</option>
-        <option value="食堂">食堂</option>
-        <option value="教室">教室</option>
-        <option value="厕所">厕所</option>
-      </select>
-    </div>
-    <div class="title-text">大学乐园：AI 模拟世界</div>
+  <div class="title">大学乐园：AI 模拟世界</div>
+
+  <div class="scene-control">
+    <label for="scene-select">切换场景：</label>
+    <select id="scene-select" onchange="changeScene()">
+      <option value="宿舍">宿舍</option>
+      <option value="食堂">食堂</option>
+      <option value="教室">教室</option>
+      <option value="厕所">厕所</option>
+    </select>
   </div>
 
   <div class="game-area">
     <img id="bg-img" class="background" src="images/bg_dorm.png" alt="背景图">
     <div class="scene-desc" id="scene-desc">你站在四人间宿舍内，床铺整齐，阳光从窗帘缝隙透进来。</div>
+    <div class="avatars" id="avatar-area"></div>
   </div>
 
-  <div class="avatar-float" id="avatar-area"></div>
-
   <div class="status-bar" id="status-bar">
-    时间：10:32 ｜ 当前位置：宿舍 ｜ 状态：正常
+    时间：10:32 ｜ 当前场景：宿舍 ｜ 状态：正常
   </div>
 
   <script>
@@ -139,7 +114,7 @@
       const selected = document.getElementById("scene-select").value;
       document.getElementById("bg-img").src = scenes[selected].background;
       document.getElementById("scene-desc").innerText = scenes[selected].description;
-      document.getElementById("status-bar").innerText = `时间：10:32 ｜ 当前位置：${selected} ｜ 状态：正常`;
+      document.getElementById("status-bar").innerText = `时间：10:32 ｜ 当前场景：${selected} ｜ 状态：正常`;
 
       const avatarArea = document.getElementById("avatar-area");
       avatarArea.innerHTML = "";
@@ -156,4 +131,5 @@
   </script>
 </body>
 </html>
+
 
