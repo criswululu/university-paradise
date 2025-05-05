@@ -1,167 +1,150 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>大学乐园 - AI 沙盒系统</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #fdf6e3;
-      color: #333;
-    }
-    .title {
-      background-color: #2c3e50;
+    body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
       color: white;
-      padding: 16px;
-      font-size: 22px;
-      text-align: center;
-    }
-    .player-avatar {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid #333;
-      background-color: #fff;
-      z-index: 10;
+      padding: 10px 15px;
     }
     .scene-control {
-      position: absolute;
-      top: 10px;
-      left: 70px;
-      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scene-control img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
     }
     select {
-      font-size: 18px;
-      padding: 6px 10px;
-      border-radius: 6px;
+      font-size: 16px;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .title-text {
+      font-size: 20px;
+      font-weight: bold;
     }
     .game-area {
       position: relative;
-      text-align: center;
+      max-width: 800px;
+      margin: auto;
+      padding: 10px;
     }
     .background {
       width: 100%;
-      max-width: 480px;
-      height: auto;
-      border-radius: 10px;
-      margin: 0 auto;
-      display: block;
+      border-radius: 8px;
     }
     .scene-desc {
-      font-size: 18px;
-      margin: 12px;
-      line-height: 1.5;
+      font-size: 16px;
+      margin: 10px 0;
+      color: #333;
     }
-    .avatars {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
+    .avatar-float {
+      position: fixed;
+      bottom: 80px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 5px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      align-items: flex-end;
-      z-index: 5;
+      align-items: center;
+      gap: 6px;
+      z-index: 999;
     }
     .avatar-box {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-color: rgba(255, 255, 255, 0.7);
-      padding: 4px;
-      border-radius: 6px;
     }
     .avatar {
-      width: auto;
-      height: 100px;
-      border-radius: 6px;
+      width: 64px;
+      border-radius: 50%;
       border: 2px solid #ccc;
-      object-fit: contain;
     }
     .name-tag {
-      margin-top: 4px;
-      font-size: 14px;
+      margin-top: 2px;
       font-weight: bold;
+      font-size: 14px;
     }
     .status-bar {
-      padding: 10px;
-      font-size: 16px;
+      text-align: center;
+      font-size: 14px;
       background-color: #eee;
+      padding: 8px;
       border-top: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
-  <div class="title">大学乐园：AI 模拟世界</div>
-
-  <img src="images/avatar_xiaxia.png" class="player-avatar" alt="主角头像">
-
-  <div class="scene-control">
-    <select id="scene-select" onchange="changeScene()">
-      <option value="宿舍">宿舍</option>
-      <option value="食堂">食堂</option>
-      <option value="教室">教室</option>
-      <option value="厕所">厕所</option>
-    </select>
+  <div class="header">
+    <div class="scene-control">
+      <img src="images/avatar_male.png" alt="主角">
+      <select id="scene-select" onchange="changeScene()">
+        <option value="宿舍">宿舍</option>
+        <option value="食堂">食堂</option>
+        <option value="教室">教室</option>
+        <option value="厕所">厕所</option>
+      </select>
+    </div>
+    <div class="title-text">大学乐园：AI 模拟世界</div>
   </div>
 
   <div class="game-area">
     <img id="bg-img" class="background" src="images/bg_dorm.png" alt="背景图">
     <div class="scene-desc" id="scene-desc">你站在四人间宿舍内，床铺整齐，阳光从窗帘缝隙透进来。</div>
-    <div class="avatars" id="avatar-area"></div>
   </div>
+
+  <div class="avatar-float" id="avatar-area"></div>
 
   <div class="status-bar" id="status-bar">
     时间：10:32 ｜ 当前位置：宿舍 ｜ 状态：正常
   </div>
 
   <script>
-    let world = {
-      player: {
-        name: "小夏",
-        location: "宿舍",
-        status: "正常",
-        time: "10:32"
+    const scenes = {
+      "宿舍": {
+        background: "images/bg_dorm.png",
+        description: "你站在四人间宿舍内，床铺整齐，阳光从窗帘缝隙透进来。"
       },
-      characters: [
-        { name: "小鹿", location: "教室", avatar: "images/avatar_lu.png" }
-      ],
-      scenes: {
-        "宿舍": {
-          background: "images/bg_dorm.png",
-          description: "你站在四人间宿舍内，床铺整齐，阳光从窗帘缝隙透进来。"
-        },
-        "食堂": {
-          background: "images/bg_canteen.png",
-          description: "食堂里人来人往，饭菜香气混合着噪音充斥空气。"
-        },
-        "教室": {
-          background: "images/bg_classroom.png",
-          description: "教室内灯光柔和，几位学生低头写着笔记。"
-        },
-        "厕所": {
-          background: "images/bg_toilet.png",
-          description: "厕所地砖潮湿，有水珠滑落声，空气中有些清洁剂气味。"
-        }
+      "食堂": {
+        background: "images/bg_canteen.png",
+        description: "食堂里人来人往，饭菜香气混合着噪音充斥空气。"
+      },
+      "教室": {
+        background: "images/bg_classroom.png",
+        description: "教室内灯光柔和，几位学生低头写着笔记。"
+      },
+      "厕所": {
+        background: "images/bg_toilet.png",
+        description: "厕所地砖潮湿，有水珠滑落声，空气中有些清洁剂气味。"
       }
     };
 
+    const characters = [
+      { name: "小夏", location: "宿舍", avatar: "images/avatar_xiaxia.png" },
+      { name: "小鹿", location: "教室", avatar: "images/avatar_lu.png" }
+    ];
+
     function changeScene() {
       const selected = document.getElementById("scene-select").value;
-      world.player.location = selected;
-
-      document.getElementById("bg-img").src = world.scenes[selected].background;
-      document.getElementById("scene-desc").innerText = world.scenes[selected].description;
+      document.getElementById("bg-img").src = scenes[selected].background;
+      document.getElementById("scene-desc").innerText = scenes[selected].description;
+      document.getElementById("status-bar").innerText = `时间：10:32 ｜ 当前位置：${selected} ｜ 状态：正常`;
 
       const avatarArea = document.getElementById("avatar-area");
       avatarArea.innerHTML = "";
 
-      world.characters.forEach(char => {
+      characters.forEach(char => {
         if (char.location === selected) {
           const div = document.createElement("div");
           div.className = "avatar-box";
@@ -169,16 +152,7 @@
           avatarArea.appendChild(div);
         }
       });
-
-      updateStatusBar();
     }
-
-    function updateStatusBar() {
-      const statusBar = document.getElementById("status-bar");
-      statusBar.innerText = `时间：${world.player.time} ｜ 当前位置：${world.player.location} ｜ 状态：${world.player.status}`;
-    }
-
-    updateStatusBar();
   </script>
 </body>
 </html>
